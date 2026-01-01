@@ -38,7 +38,7 @@ La página detecta automáticamente la fecha del sistema y muestra efectos visua
 
 ```bash
 # 1. Clona el repositorio
-git clone https://github.com/tu-usuario/dashboard-programacion-2026.git
+git clone https://github.com/Adri-Coding-Dev/Exercises_2026.git
 
 # 2. Navega al directorio del proyecto
 cd dashboard-programacion-2026
