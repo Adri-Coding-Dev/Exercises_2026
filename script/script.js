@@ -2,7 +2,7 @@
 // CONSTANTES Y CONFIGURACIÓN
 // ============================================================================
 const exercisesData = [
-    { "id": 1, "titulo": "Hola Java", "descripcion": "Imprimir por consola el mensaje 'Hola, Java'.", "nivel": "Básico", "completado": false },
+  { "id": 1, "titulo": "Hola Java", "descripcion": "Imprimir por consola el mensaje 'Hola, Java'.", "nivel": "Básico", "completado": false },
   { "id": 2, "titulo": "Tipos primitivos", "descripcion": "Declarar variables de todos los tipos primitivos y mostrarlas por consola.", "nivel": "Básico", "completado": false },
   { "id": 3, "titulo": "Cuadrado de un número", "descripcion": "Leer un número entero desde consola y mostrar su cuadrado.", "nivel": "Básico", "completado": false },
   { "id": 4, "titulo": "Conversiones de tipo", "descripcion": "Convertir un int a double y un double a int.", "nivel": "Básico", "completado": false },
