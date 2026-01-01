@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Año 2026 - Dashboard de Aprendizaje</title>
+    <link href="https://fonts.googleapis.com/css2?family=Minecraft&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #16161e;
+            --bg-secondary: #1a1b26;
+            --bg-card: #24283b;
+            --cyan: #7dcfff;
+            --violet: #bb9af7;
+            --blue: #2ac3de;
+            --green: #9ece6a;
+            --yellow: #e0af68;
+            --red: #f7768e;
+            --text-primary: #c0caf5;
+            --text-secondary: #a9b1d6;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Estilo para el encabezado con canvas */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #titleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .header-text {
+            position: relative;
+            z-index: 2;
+            margin-top: 20px;
+        }
+
+        .subtitle {
+            font-family: 'Minecraft', monospace;
+            color: var(--cyan);
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-top: 100px;
+        }
+
+        /* Estilo para los efectos de estación */
+        .season-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #seasonCanvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .season-info {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(26, 27, 38, 0.8);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            font-family: 'Minecraft', monospace;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            z-index: 100;
+            border: 1px solid var(--cyan);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Controles de sonido */
+        .sound-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(26, 27, 38, 0.8);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            font-family: 'Minecraft', monospace;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            z-index: 100;
+            border: 1px solid var(--cyan);
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .sound-control:hover {
+            background-color: rgba(36, 40, 59, 0.9);
+        }
+
+        /* Sección de ejercicios */
+        .exercises-section {
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(122, 162, 247, 0.1);
+        }
+
+        .section-title {
+            font-family: 'Minecraft', monospace;
+            color: var(--violet);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        /* Filtros y estadísticas */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            font-family: 'Minecraft', monospace;
+        }
+
+        .stat {
+            background-color: var(--bg-card);
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgba(122, 162, 247, 0.1);
+        }
+
+        .stat-value {
+            color: var(--cyan);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            background-color: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid rgba(122, 162, 247, 0.1);
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--cyan);
+            color: var(--bg-primary);
+            border-color: var(--cyan);
+        }
+
+        /* Lista de ejercicios */
+        .exercises-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .exercise-card {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            border: 1px solid rgba(122, 162, 247, 0.1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exercise-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .exercise-card.completed {
+            opacity: 0.7;
+            border-color: var(--green);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .exercise-title {
+            font-family: 'Minecraft', monospace;
+            color: var(--cyan);
+            font-size: 1.2rem;
+            flex-grow: 1;
+        }
+
+        .exercise-card.completed .exercise-title {
+            text-decoration: line-through;
+            color: var(--green);
+        }
+
+        .exercise-level {
+            background-color: var(--violet);
+            color: var(--bg-primary);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        .exercise-description {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .exercise-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .checkbox-container input {
+            display: none;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--cyan);
+            border-radius: 4px;
+            margin-right: 10px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .checkbox-container input:checked + .custom-checkbox {
+            background-color: var(--green);
+            border-color: var(--green);
+        }
+
+        .checkbox-container input:checked + .custom-checkbox::after {
+            content: '✓';
+            position: absolute;
+            color: var(--bg-primary);
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .checkbox-label {
+            color: var(--text-primary);
+            font-family: 'Minecraft', monospace;
+        }
+
+        .exercise-id {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Overlay de efectos estacionales */
+        .season-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0.1;
+            transition: opacity 1s ease;
+        }
+
+        .summer-overlay {
+            background: linear-gradient(135deg, rgba(255, 200, 100, 0.1) 0%, rgba(255, 150, 50, 0.05) 100%);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header {
+                height: 150px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .filters {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .exercise-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .exercise-level {
+                margin-left: 0;
+                align-self: flex-start;
+            }
+            
+            .season-info, .sound-control {
+                position: static;
+                margin-top: 15px;
+            }
+        }
+
+        /* Mejoras para efectos de hojas */
+.season-effects {
+    pointer-events: none;
+}
+
+#seasonCanvas {
+    opacity: 0.8;
+    transition: opacity 0.5s ease;
+}
+
+/* Efecto de viento para hojas */
+@keyframes leafSway {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(-5px) rotate(-2deg); }
+    75% { transform: translateX(5px) rotate(2deg); }
+}
+
+.leaf {
+    position: absolute;
+    animation: leafSway 3s ease-in-out infinite;
+    opacity: 0.8;
+    z-index: 5;
+}
+    </style>
+</head>
+<body>
+    <!-- Efectos de estación -->
+    <div class="season-effects">
+        <canvas id="seasonCanvas"></canvas>
+        <div id="seasonOverlay" class="season-overlay"></div>
+    </div>
+    
+    <!-- Indicador de estación -->
+    <div class="season-info" id="seasonInfo">
+        Estación: <span id="seasonName">Cargando...</span>
+    </div>
+    
+    <!-- Control de sonido -->
+    <div class="sound-control" id="soundControl">
+        🔊 Sonido: <span id="soundStatus">Encendido</span>
+    </div>
+    
+    <!-- Contenido principal -->
+    <div class="container">
+        <header class="header">
+            <canvas id="titleCanvas"></canvas>
+            <div class="header-text">
+                <h1 class="subtitle">AÑO DE APRENDIZAJE Y SUPERACIÓN</h1>
+            </div>
+        </header>
+        
+        <main>
+            <section class="exercises-section">
+                <h2 class="section-title">RETOS DE PROGRAMACIÓN JAVA 2026</h2>
+                
+                <div class="controls">
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-value" id="totalExercises">0</span>
+                            <span class="stat-label">TOTAL</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="completedExercises">0</span>
+                            <span class="stat-label">COMPLETADOS</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="progressPercentage">0%</span>
+                            <span class="stat-label">PROGRESO</span>
+                        </div>
+                    </div>
+                    
+                    <div class="filters">
+                        <button class="filter-btn active" data-filter="all">Todos</button>
+                        <button class="filter-btn" data-filter="pending">Pendientes</button>
+                        <button class="filter-btn" data-filter="completed">Completados</button>
+                    </div>
+                </div>
+                
+                <div class="exercises-list" id="exercisesList">
+                    <!-- Los ejercicios se cargarán aquí -->
+                </div>
+            </section>
+        </main>
+    </div>
+    <!-- Audio para efectos de verano -->
+    <audio id="summerSound" loop>
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-crickets-and-insects-in-the-wild-ambience-39.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
